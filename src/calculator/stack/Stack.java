@@ -1,5 +1,7 @@
 package calculator.stack;
 
+import java.util.EmptyStackException;
+
 public class Stack<T> {
     private Object[] stack;
     private int top;
@@ -10,6 +12,9 @@ public class Stack<T> {
     }
 
     public Stack (int capacity) {
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("A capacidade deve ser maior que zero: " + capacity);
+        }
         this.top = -1;
         this.stack = new Object[capacity];
     }
@@ -21,7 +26,7 @@ public class Stack<T> {
 
     @SuppressWarnings("unchecked")
     public T pop(){
-        if(this.top == -1) return null;
+        if(this.top == -1) throw new EmptyStackException();
         T item = (T) this.stack[this.top];
         this.stack[this.top--] = null;
         return item;
@@ -29,7 +34,7 @@ public class Stack<T> {
 
     @SuppressWarnings("unchecked")
     public T peek(){
-        if(this.top == -1) return null;
+        if(this.top == -1) throw new EmptyStackException();
         return (T) this.stack[this.top];
     }
 
@@ -37,11 +42,10 @@ public class Stack<T> {
         return this.top == -1;
     }
 
-    public Object[] expandStack(Object[] currentStack){
-        Object[] newStack = new Object[currentStack.length > 1 ? (int) (currentStack.length * 1.5) : 2];
-        for(int i = 0; i < newStack.length; i++){
-            newStack[i] = currentStack[i];
-        }
+    private Object[] expandStack(Object[] currentStack){
+        int newCapacity = currentStack.length > 1 ? (int) (currentStack.length * 1.5) : 2;
+        Object[] newStack = new Object[newCapacity];
+        System.arraycopy(currentStack, 0, newStack, 0, currentStack.length);
         return newStack;
     }
 }
